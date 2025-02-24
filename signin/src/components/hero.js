@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import './hero.css';
 
-
-const HeroSection = () => {
+const HeroSection = ({ onSearch, onFilter }) => {
   const [search, setSearch] = useState('');
   const [location, setLocation] = useState('');
   const [name, setName] = useState('');
-  const [availability, setAvailability] = useState('');
+  const [price, setPrice] = useState('');
 
   const handleSearch = () => {
-    alert(`Searching for hotels with:
-      Destination: ${search}
-      Location: ${location}
-      Name: ${name}
-      Availability: ${availability}`);
+    onSearch(name);
+  };
+
+  const handleFilter = () => {
+    onFilter({ location, name, price });
   };
 
   return (
@@ -24,10 +23,13 @@ const HeroSection = () => {
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Search for a destination..."
+            placeholder="Search for a hotel..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <button onClick={handleSearch}>Search</button>
+        </div>
+        <div className="filter-bar">
           <input
             type="text"
             placeholder="Filter by location..."
@@ -41,12 +43,12 @@ const HeroSection = () => {
             onChange={(e) => setName(e.target.value)}
           />
           <input
-            type="text"
-            placeholder="Filter by availability..."
-            value={availability}
-            onChange={(e) => setAvailability(e.target.value)}
+            type="number"
+            placeholder="Filter by price..."
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
           />
-          <button onClick={handleSearch}>Search</button>
+          <button onClick={handleFilter}>Filter</button>
         </div>
       </div>
     </div>

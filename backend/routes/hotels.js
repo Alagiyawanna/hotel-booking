@@ -1,12 +1,27 @@
 const express = require('express');
 const router = express.Router();
-// const Hotel = require('../models/Hotel');
 const Hotel = require('../models/hotels');
 
-// Get all hotels
+// Get all hotels or filter hotels
 router.get('/', async (req, res) => {
+  const { search, location, name, price } = req.query;
+  let query = {};
+
+  if (search) {
+    query.name = { $regex: search, $options: 'i' };
+  }
+  if (location) {
+    query.location = { $regex: location, $options: 'i' };
+  }
+  if (name) {
+    query.name = { $regex: name, $options: 'i' };
+  }
+  if (price) {
+    query.price = { $lte: parseFloat(price) };
+  }
+
   try {
-    const hotels = await Hotel.find();
+    const hotels = await Hotel.find(query);
     res.json(hotels);
   } catch (err) {
     res.status(500).json({ message: err.message });

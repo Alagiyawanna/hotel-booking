@@ -11,14 +11,14 @@
   text-align: center;
 }
 
-.search-bar {
+.search-bar, .filter-bar {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
 }
 
-.search-bar input {
+.search-bar input, .filter-bar input {
   width: 100%;
   max-width: 400px;
   padding: 10px;
@@ -28,7 +28,7 @@
   font-size: 1rem;
 }
 
-.search-bar button {
+.search-bar button, .filter-bar button {
   width: 100%;
   max-width: 400px;
   padding: 10px;
@@ -41,6 +41,6 @@
   transition: background-color 0.2s;
 }
 
-.search-bar button:hover {
+.search-bar button:hover, .filter-bar button:hover {
   background-color: #16a34a;
 }
