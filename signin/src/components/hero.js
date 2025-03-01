@@ -8,7 +8,7 @@ const HeroSection = ({ onSearch, onFilter }) => {
   const [price, setPrice] = useState('');
 
   const handleSearch = () => {
-    onSearch(name);
+    onSearch(search);
   };
 
   const handleFilter = () => {
