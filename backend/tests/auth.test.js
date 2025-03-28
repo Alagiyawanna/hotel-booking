@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { describe, it, expect } = require('@jest/globals');
 
 // Mock environment variables
 process.env.JWT_SECRET = 'test-secret-key';
