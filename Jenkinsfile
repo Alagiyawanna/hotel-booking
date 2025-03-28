@@ -1,6 +1,11 @@
 pipeline {
     agent any
     
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        TF_IN_AUTOMATION = 'true'
+    }
     
     stages {
         stage('Checkout') {
@@ -14,7 +19,8 @@ pipeline {
                 // Backend tests
                 dir('backend') {
                     sh 'npm install'
-                    sh 'npm test || true' // Continue even if tests fail for now
+                    sh 'cp .env.test .env' // Use test environment for testing
+                    sh 'npm test'
                 }
                 
                 // Frontend tests
