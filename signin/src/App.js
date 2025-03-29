@@ -4,6 +4,8 @@ import Login from "./components/login";
 import Signup from "./components/signup";
 import Home from "./components/home";
 import Hotels from "./components/hotels";
+import Profile from "./components/profile";
+import BookHotel from "./components/BookHotel";
 
 const App = () => {
   return (
@@ -13,6 +15,8 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Home />} />
         <Route path="/hotels" element={<Hotels />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/book/:hotelId" element={<BookHotel />} />
       </Routes>
     </Router>
   );

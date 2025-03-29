@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './hotel.css';
 import Navbar from './navbar';
 import Footer from './footer';
@@ -7,6 +8,7 @@ import HeroSection from './hero';
 
 const Hotels = () => {
   const [hotels, setHotels] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchHotels();
@@ -39,6 +41,19 @@ const Hotels = () => {
     fetchHotels(query);
   };
 
+  const handleBookNow = (hotelId) => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("You need to login to book a hotel");
+      navigate('/login');
+      return;
+    }
+    
+    // If logged in, navigate to booking page
+    navigate(`/book/${hotelId}`);
+  };
+
   return (
     <div>
       <Navbar />
@@ -52,7 +67,11 @@ const Hotels = () => {
               <h2 className="hotel-name">{hotel.name}</h2>
               <p className="hotel-location">{hotel.location}</p>
               <p className="hotel-price">${hotel.price} / night</p>
+              <p className="hotel-rooms">Available Rooms: {hotel.rooms || 0}</p>
               <p className="hotel-description">{hotel.description}</p>
+              <button className="book-button" onClick={() => handleBookNow(hotel._id)}>
+                Book Now
+              </button>
             </div>
           ))}
         </div>

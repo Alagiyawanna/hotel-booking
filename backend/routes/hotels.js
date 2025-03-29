@@ -35,7 +35,8 @@ router.post('/', async (req, res) => {
     location: req.body.location,
     price: req.body.price,
     description: req.body.description,
-    image: req.body.image
+    image: req.body.image,
+    rooms: req.body.rooms || 0
   });
 
   try {

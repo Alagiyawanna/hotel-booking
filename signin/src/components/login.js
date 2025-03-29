@@ -1,25 +1,32 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import './login.css';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    
     try {
       const response = await axios.post("http://localhost:5000/login", { email, password });
-      console.log(response.data);
+      
+      // Store user info and token in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.result));
+      
       alert("Login successful");
+      navigate('/'); // Redirect to home page
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
-        console.error(error.response.data.message);
-        alert(error.response.data.message);
+        setError(error.response.data.message);
       } else {
-        console.error("An error occurred:", error.message);
-        alert("An error occurred. Please try again.");
+        setError("An error occurred. Please try again.");
       }
     }
   };
@@ -28,12 +35,14 @@ const Login = () => {
     <div className="login-container">
       <form onSubmit={handleLogin} className="login-form">
         <h2 className="form-title">Login</h2>
+        {error && <div className="error-message">{error}</div>}
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="form-input"
+          required
         />
         <input
           type="password"
@@ -41,6 +50,7 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="form-input"
+          required
         />
         <button type="submit" className="submit-button">
           Login

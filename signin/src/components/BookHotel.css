@@ -1,0 +1,195 @@
+.book-hotel-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  
+  .book-hotel-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  .error-message {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .hotel-details {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  
+  @media (min-width: 768px) {
+    .hotel-details {
+      flex-direction: row;
+    }
+  }
+  
+  .hotel-image-container {
+    flex: 1;
+    max-width: 100%;
+  }
+  
+  @media (min-width: 768px) {
+    .hotel-image-container {
+      max-width: 40%;
+    }
+  }
+  
+  .hotel-detail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .hotel-info {
+    flex: 1;
+    padding: 1.5rem;
+  }
+  
+  .hotel-info h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .hotel-location {
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hotel-price {
+    font-weight: bold;
+    color: #22c55e;
+    margin-bottom: 1rem;
+  }
+  
+  .hotel-description {
+    margin-bottom: 1rem;
+  }
+  
+  .hotel-rooms {
+    color: #4b5563;
+  }
+  
+  .booking-form {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .booking-form h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+  }
+  
+  .check-availability-button {
+    width: 100%;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 1.5rem;
+  }
+  
+  .check-availability-button:hover:not(:disabled) {
+    background-color: #2563eb;
+  }
+  
+  .check-availability-button:disabled {
+    background-color: #93c5fd;
+    cursor: not-allowed;
+  }
+  
+  .availability-info {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+  }
+  
+  .availability-info h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+  
+  .available {
+    color: #22c55e;
+    font-weight: bold;
+    margin-left: 0.5rem;
+  }
+  
+  .unavailable {
+    color: #ef4444;
+    font-weight: bold;
+    margin-left: 0.5rem;
+  }
+  
+  .booking-summary {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+  
+  .booking-summary h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .booking-summary p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .total-price {
+    font-size: 1.25rem;
+    margin: 1rem 0;
+    color: #22c55e;
+  }
+  
+  .book-now-button {
+    width: 100%;
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  
+  .book-now-button:hover {
+    background-color: #16a34a;
+  }
