@@ -1,52 +1,175 @@
 .navbar {
-    background: #333;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-  }
-  
-  .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    padding: 0 20px;
-  }
-  
-  .navbar-logo {
-    color: #fff;
-    justify-self: start;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
+  background-color: var(--bg-dark);
+  height: var(--header-height);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  box-shadow: var(--shadow-md);
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.navbar-logo {
+  color: var(--bg-primary);
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.navbar-logo:hover {
+  opacity: 0.9;
+  color: var(--bg-primary);
+}
+
+.logo-icon {
+  color: var(--bg-primary);
+  margin-right: var(--spacing-xs);
+  transition: transform var(--transition-normal);
+}
+
+.navbar-logo:hover .logo-icon {
+  transform: scale(1.1);
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu.active {
+  height: auto;
+  max-height: calc(100vh - var(--header-height));
+  padding: var(--spacing-md) 0;
+  opacity: 1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+}
+
+
+.nav-item {
+  height: 100%;
+  position: relative;
+}
+
+.nav-links {
+  color: var(--bg-primary);
+  text-decoration: none;
+  padding: 0 var(--spacing-lg);
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.nav-links:hover {
+  color: var(--primary-light);
+}
+
+.nav-links::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background-color: var(--primary);
+  transition: all var(--transition-normal);
+  transform: translateX(-50%);
+}
+
+.nav-links:hover::after {
+  width: 70%;
+}
+
+.active-link {
+  color: var(--primary) !important;
+}
+
+.active-link::after {
+  width: 70%;
+}
+
+/* Mobile menu toggle */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--bg-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  transition: color var(--transition-fast);
+}
+
+.menu-toggle:hover {
+  color: var(--primary-light);
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
   }
   
   .nav-menu {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    text-align: center;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    flex-direction: column;
+    background-color: var(--bg-dark);
+    transition: all var(--transition-normal);
+    z-index: var(--z-dropdown);
+    opacity: 0;
+    justify-content: center; /* Pre-set for transition */
+    align-items: center; /* Pre-set for transition */
   }
   
+  /* Add some spacing between nav items */
   .nav-item {
-    height: 60px;
+    width: 100%;
+    text-align: center;
+    height: auto;
+    margin: var(--spacing-sm) 0;
+  }
+  
+  .nav-menu.active {
+    height: auto;
+    max-height: calc(100vh - var(--header-height));
+    padding: var(--spacing-md) 0;
+    opacity: 1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
   .nav-links {
-    color: #fff;
-    text-decoration: none;
-    padding: 0 1rem;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    transition: background 0.3s;
+    padding: var(--spacing-md) 0;
+    width: 100%;
+    height: auto;
+    font-size: 1.1rem;
   }
   
-  .nav-links:hover {
-    background: #575757;
-    border-radius: 4px;
+  .nav-links::after {
+    display: none;
   }
+}
+

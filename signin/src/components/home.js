@@ -1,58 +1,78 @@
-import React from 'react';
-import HeroSection from './hero';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 import Navbar from './navbar';
 import Footer from './footer';
 import AboutUs from './AboutUs';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import Slideshow from './Slideshow';
+import './home.css';
 
 const Home = () => {
-
     const [hotels, setHotels] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const fetchHotels = (query = '') => {
-        axios.get(`http://localhost:5000/api/hotels${query}`)
-            .then(response => { setHotels(response.data); })
-            .catch(err => console.log(err));
-    };
+    useEffect(() => {
+        // Fetch hotels on initial load
+        fetchHotels();
+    }, []);
 
-    const handleSearch = (search) => {
-        fetchHotels(`?search=${search}`);
-    };
-
-    const handleFilter = (filters) => {
-        const { location, name, price } = filters;
-        let query = '?';
-
-        if (location) {
-            query += `location=${location}&`;
-        }
-        if (name) {
-            query += `name=${name}&`;
-        }
-        if (price) {
-            query += `price=${price}&`;
-        }
-
-        fetchHotels(query);
+    const fetchHotels = () => {
+        setLoading(true);
+        axios.get('http://localhost:5000/api/hotels')
+            .then(response => { 
+                setHotels(response.data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.log(err);
+                setLoading(false);
+            });
     };
 
     return (
-        <div>
+        <div className="home-page">
             <Navbar />
-            <HeroSection onSearch={handleSearch} onFilter={handleFilter} />
-            <div className="hotels-grid">
-                {hotels.map(hotel => (
-                    <div key={hotel._id} className="hotel-card">
-                        <img src={hotel.image} alt={hotel.name} className="hotel-image" />
-                        <h2 className="hotel-name">{hotel.name}</h2>
-                        <p className="hotel-location">{hotel.location}</p>
-                        <p className="hotel-price">${hotel.price} / night</p>
-                        <p className="hotel-description">{hotel.description}</p>
-                    </div>
-                ))}
-            </div>
+            
+            {/* Hero Section without Search & Filters */}
+            <section className="hero-section">
+                <div className="hero-content">
+                    <h1>Welcome to Your Dream Stay</h1>
+                    <p>Book your perfect hotel stay with ease and comfort.</p>
+                    <Link to="/hotels" className="hero-cta-button">
+                        Browse All Hotels
+                    </Link>
+                </div>
+            </section>
+            
+            {/* Hotel Slideshow */}
+            {!loading && hotels.length > 0 && (
+                <Slideshow 
+                    items={hotels} 
+                    title="Featured Hotels" 
+                    subtitle="Discover our handpicked selection of exceptional accommodations"
+                    autoplaySpeed={6000}
+                />
+            )}
+            
+            {/* About Us Section */}
             <AboutUs />
+            
+            {/* Call to Action Section */}
+            <section className="cta-section">
+                <div className="container">
+                    <div className="cta-container">
+                        <h2 className="cta-title">Ready for Your Next Adventure?</h2>
+                        <p className="cta-text">
+                            Discover perfect accommodations for your next adventure. 
+                            From luxury hotels to cozy retreats, we have the ideal place for every traveler.
+                        </p>
+                        <Link to="/hotels" className="cta-button">
+                            Explore All Hotels
+                        </Link>
+                    </div>
+                </div>
+            </section>
+            
             <Footer />
         </div>
     );

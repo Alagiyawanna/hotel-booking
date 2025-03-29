@@ -1,230 +1,567 @@
-.profile-container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 1rem;
-  }
-  
-  .profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-  
-  .logout-button {
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .logout-button:hover {
-    background-color: #dc2626;
-  }
-  
-  .profile-info {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  
-  .profile-info h2 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    color: #333;
-  }
-  
-  .profile-info p {
-    color: #6b7280;
-    margin: 0;
-  }
-  
-  .profile-bookings h2 {
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  
-  .no-bookings {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    text-align: center;
-    color: #6b7280;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .bookings-list {
-    display: grid;
-    grid-gap: 1rem;
-  }
-  
-  .booking-card {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-  }
-  
-  .booking-hotel {
-    display: flex;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 1rem;
-  }
-  
-  .booking-image {
-    width: 120px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 1rem;
-  }
-  
-  .booking-details h3 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-  }
-  
-  .booking-location {
-    color: #6b7280;
-    margin: 0;
-    margin-bottom: 0.25rem;
-  }
-  
-  .booking-price {
-    font-weight: bold;
-    color: #22c55e;
-    margin: 0;
-  }
-  
-  .booking-info {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .booking-status {
-    grid-column: 1 / -1;
-  }
-  
-  .booking-status.confirmed {
-    color: #22c55e;
-  }
-  
-  .booking-status.pending {
-    color: #eab308;
-  }
-  
-  .booking-status.cancelled {
-    color: #ef4444;
-  }
+/* Modern Profile Page */
+.profile-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 0.9)),
+              url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop') center/cover fixed;
+}
 
-  /* Add to your existing profile.css */
+/* Add this after the .profile-page style */
+
+.profile-header-section {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.8) 0%, rgba(59, 130, 246, 0.8) 100%);
+  padding: var(--spacing-2xl) 0;
+  color: white;
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.profile-header-section h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.profile-header-section p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Then adjust the .profile-container to remove conflicting margins */
+.profile-container {
+  max-width: var(--container-width);
+  margin: 0 auto var(--spacing-2xl);
+  padding: 0 var(--spacing-md);
+  flex: 1;
+}
+
+/* Modify profile-header to work with the new design */
+.profile-header {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.profile-container {
+  max-width: var(--container-width);
+  margin: var(--spacing-xl) auto;
+  padding: 0 var(--spacing-md);
+  flex: 1;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+}
+
+.profile-title h1 {
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.profile-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.logout-button {
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.logout-button:hover {
+  background-color: var(--danger-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+.logout-icon {
+  font-size: 1.2rem;
+}
+
+.profile-info {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-info:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(34, 197, 94, 0.2);
+}
+
+.user-details h2 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.user-details p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.profile-bookings {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-xl);
+}
+
+.bookings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.bookings-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.booking-tabs {
+  display: flex;
+  gap: var(--spacing-xs);
+  background-color: var(--bg-light);
+  padding: 4px;
+  border-radius: var(--radius-full);
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.tab-button:hover {
+  color: var(--primary);
+}
+
+.tab-button.active {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+}
+
+.no-bookings {
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  color: var(--text-secondary);
+  background-color: var(--bg-light);
+  border-radius: var(--radius-md);
+}
+
+.no-bookings-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-lg);
+  display: block;
+  color: var(--text-light);
+}
+
+.no-bookings h3 {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.no-bookings p {
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.bookings-list {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.booking-card {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background-color: white;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-left: 5px solid transparent;
+  position: relative;
+}
+
+.booking-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.booking-card.confirmed {
+  border-left-color: var(--primary);
+}
+
+.booking-card.pending {
+  border-left-color: var(--warning);
+}
+
+.booking-card.cancelled {
+  border-left-color: var(--danger);
+}
+
+.booking-hotel {
+  display: flex;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+.booking-image {
+  width: 130px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-right: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease;
+}
+
+.booking-card:hover .booking-image {
+  transform: scale(1.05);
+}
+
+.booking-name-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xs);
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.booking-name-status h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.status-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.confirmed {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: var(--primary);
+}
+
+.status-badge.pending {
+  background-color: rgba(234, 179, 8, 0.1);
+  color: var(--warning);
+}
+
+.status-badge.cancelled {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+.booking-location {
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.booking-location::before {
+  content: '📍';
+  margin-right: var(--spacing-xs);
+}
+
+.booking-price-nights {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.booking-price {
+  font-weight: bold;
+  color: var(--primary);
+  margin: 0;
+}
+
+.booking-nights {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+  background-color: rgba(59, 130, 246, 0.1);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+}
+
+.booking-info {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.booking-dates {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-light);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+}
+
+.date-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.date-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.date-separator {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.booking-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--bg-light);
+  border-radius: var(--radius-full);
+}
+
+.meta-icon {
+  font-size: 1.1rem;
+}
+
+.meta-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
 .booking-actions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: rgba(248, 250, 252, 0.5);
+  border-top: 1px solid var(--border);
+}
+
+.extend-button, .cancel-button {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
 }
 
 .extend-button {
-  flex: 1;
-  background-color: #3b82f6;
+  background-color: var(--secondary);
   color: white;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .extend-button:hover {
-  background-color: #2563eb;
+  background-color: var(--secondary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
 }
 
 .cancel-button {
-  flex: 1;
-  background-color: #ef4444;
+  background-color: var(--danger);
   color: white;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .cancel-button:hover {
-  background-color: #dc2626;
+  background-color: var(--danger-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+.button-icon {
+  font-size: 1.1rem;
 }
 
 /* Modal styles */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  display: grid;
+  place-items: center;
+  z-index: var(--z-modal);
+  padding: var(--spacing-md);
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  width: 100%;
   max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
+  animation: modal-in 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .modal-content h2 {
   margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #333;
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-primary);
+  position: relative;
+  padding-bottom: var(--spacing-sm);
+}
+
+.modal-content h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary);
+  border-radius: var(--radius-full);
+}
+
+.date-picker {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.date-picker:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.current-date {
+  padding: var(--spacing-md);
+  background-color: var(--bg-light);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.cancel-modal-button, .confirm-button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .cancel-modal-button {
-  background-color: #6b7280;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  background-color: var(--bg-light);
+  color: var(--text-secondary);
 }
 
 .cancel-modal-button:hover:not(:disabled) {
-  background-color: #4b5563;
+  background-color: var(--text-light);
+  color: var(--text-primary);
 }
 
 .confirm-button {
-  background-color: #22c55e;
+  background-color: var(--primary);
   color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .confirm-button:hover:not(:disabled) {
-  background-color: #16a34a;
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.2);
 }
 
 .cancel-modal-button:disabled,
@@ -232,27 +569,57 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-  
-  .cancel-button {
-    width: 100%;
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    padding: 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
 
-  
-  .cancel-button:hover {
-    background-color: #dc2626;
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+  margin-right: var(--spacing-xs);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
   }
   
-  .error-message {
-    background-color: #fee2e2;
-    color: #dc2626;
-    padding: 0.75rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+  .logout-button {
+    align-self: flex-start;
   }
+  
+  .booking-hotel {
+    flex-direction: column;
+  }
+  
+  .booking-image {
+    width: 100%;
+    height: 150px;
+    margin-right: 0;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .booking-dates {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .date-separator {
+    display: none;
+  }
+  
+  .booking-actions {
+    flex-direction: column;
+  }
+}
