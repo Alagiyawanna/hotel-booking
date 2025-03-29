@@ -59,6 +59,71 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+// Extend booking stay
+router.patch('/:id/extend', auth, async (req, res) => {
+  try {
+    const { newCheckOut } = req.body;
+    
+    if (!newCheckOut) {
+      return res.status(400).json({ message: 'New check-out date is required' });
+    }
+    
+    // Find the booking
+    const booking = await Booking.findOne({ 
+      _id: req.params.id,
+      user: req.userId,
+      status: 'confirmed'
+    });
+    
+    if (!booking) {
+      return res.status(404).json({ message: 'Active booking not found' });
+    }
+    
+    const newCheckOutDate = new Date(newCheckOut);
+    const currentCheckOut = new Date(booking.checkOut);
+    
+    // Validate new date is after current checkout
+    if (newCheckOutDate <= currentCheckOut) {
+      return res.status(400).json({ message: 'New check-out date must be after current check-out date' });
+    }
+    
+    // Check if extension is possible (room availability)
+    const hotel = await Hotel.findById(booking.hotel);
+    if (!hotel) {
+      return res.status(404).json({ message: 'Hotel not found' });
+    }
+    
+    // Count overlapping bookings during the extension period
+    const overlappingBookings = await Booking.countDocuments({
+      hotel: booking.hotel,
+      status: 'confirmed',
+      _id: { $ne: booking._id }, // Exclude current booking
+      $or: [
+        {
+          checkIn: { $lte: newCheckOutDate },
+          checkOut: { $gte: currentCheckOut }
+        }
+      ]
+    });
+    
+    // Check if rooms are available for extension
+    if (overlappingBookings >= hotel.rooms) {
+      return res.status(400).json({ message: 'No rooms available for the requested extension period' });
+    }
+    
+    // If available, update the booking
+    booking.checkOut = newCheckOutDate;
+    await booking.save();
+    
+    res.json({ 
+      message: 'Stay extended successfully',
+      newCheckOut: newCheckOutDate
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Get user's bookings
 router.get('/my-bookings', auth, async (req, res) => {
   try {
@@ -71,6 +136,7 @@ router.get('/my-bookings', auth, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 // Cancel booking
 router.patch('/:id/cancel', auth, async (req, res) => {

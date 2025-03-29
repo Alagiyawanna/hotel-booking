@@ -40,6 +40,11 @@ const Navbar = () => {
               Hotels
             </Link>
           </li>
+          <li className="nav-item">
+            <Link to="/contact" className="nav-links">
+              Contact Us
+            </Link>
+          </li>
           {isLoggedIn ? (
             <>
               <li className="nav-item">

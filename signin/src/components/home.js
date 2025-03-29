@@ -2,6 +2,7 @@ import React from 'react';
 import HeroSection from './hero';
 import Navbar from './navbar';
 import Footer from './footer';
+import AboutUs from './AboutUs';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -51,6 +52,7 @@ const Home = () => {
                     </div>
                 ))}
             </div>
+            <AboutUs />
             <Footer />
         </div>
     );

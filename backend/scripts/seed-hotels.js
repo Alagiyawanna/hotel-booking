@@ -31,6 +31,22 @@ const seedHotels = async () => {
         description: 'Modern urban hotel in the heart of Bangkok with easy access to shopping and nightlife.',
         image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop',
         rooms: 6
+      },
+      {
+        name: 'Mountain Paradise Resort',
+        location: 'Swiss Alps, Switzerland',
+        price: 420,
+        description: 'Luxurious mountain retreat with breathtaking views of the Swiss Alps. Perfect for both winter and summer escapes.',
+        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop',
+        rooms: 10
+      },
+      {
+        name: 'Urban Luxury Hotel',
+        location: 'New York City, USA',
+        price: 380,
+        description: 'Contemporary luxury hotel in the heart of Manhattan with stunning skyline views. Walking distance to major attractions.',
+        image: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2070&auto=format&fit=crop',
+        rooms: 10
       }
     ];
     

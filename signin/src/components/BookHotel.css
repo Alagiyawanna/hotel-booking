@@ -193,3 +193,16 @@
   .book-now-button:hover {
     background-color: #16a34a;
   }
+
+  .price-preview {
+    background-color: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .preview-price {
+    color: #22c55e;
+    font-weight: 500;
+  }

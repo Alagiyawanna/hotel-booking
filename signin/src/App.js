@@ -6,6 +6,7 @@ import Home from "./components/home";
 import Hotels from "./components/hotels";
 import Profile from "./components/profile";
 import BookHotel from "./components/BookHotel";
+import Contact from "./components/contact";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/hotels" element={<Hotels />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/book/:hotelId" element={<BookHotel />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );

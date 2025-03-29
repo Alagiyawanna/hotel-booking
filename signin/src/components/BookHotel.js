@@ -16,6 +16,8 @@ const BookHotel = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [checkingAvailability, setCheckingAvailability] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [nights, setNights] = useState(0);
   
   useEffect(() => {
     // Check if user is logged in
@@ -28,23 +30,88 @@ const BookHotel = () => {
     // Fetch hotel details
     fetchHotel();
   }, [hotelId, navigate]);
+
+  // Calculate total price whenever dates or hotel data changes
+  useEffect(() => {
+    if (hotel && checkIn && checkOut) {
+      calculateTotalPrice();
+    } else {
+      setTotalPrice(0);
+      setNights(0);
+    }
+  }, [hotel, checkIn, checkOut]);
   
   const fetchHotel = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/hotels?search=${hotelId}`);
-      if (response.data.length > 0) {
-        // Find the exact hotel by ID
-        const hotelData = response.data.find(h => h._id === hotelId) || response.data[0];
+      const response = await axios.get(`http://localhost:5000/api/hotels`)
+        .catch((err) => {
+          console.error("Error fetching all hotels:", err);
+          return { data: [] };
+        });
+      
+      // Find the specific hotel by ID
+      const hotelData = Array.isArray(response.data) 
+        ? response.data.find(h => h._id === hotelId) 
+        : null;
+      
+      if (hotelData) {
+        console.log("Found hotel:", hotelData);
         setHotel(hotelData);
       } else {
         setError('Hotel not found');
+        console.error("Hotel not found with ID:", hotelId);
       }
+      
       setLoading(false);
     } catch (err) {
+      console.error("Error in fetchHotel:", err);
       setError('Failed to load hotel details');
       setLoading(false);
     }
+  };
+  
+  const calculateTotalPrice = () => {
+    if (!hotel || !checkIn || !checkOut) {
+      setTotalPrice(0);
+      setNights(0);
+      return;
+    }
+    
+    try {
+      const checkInDate = new Date(checkIn);
+      const checkOutDate = new Date(checkOut);
+      
+      // Ensure valid dates
+      if (isNaN(checkInDate) || isNaN(checkOutDate)) {
+        console.log("Invalid dates");
+        setTotalPrice(0);
+        setNights(0);
+        return;
+      }
+      
+      // Calculate nights (ensure at least 1 night)
+      const diffTime = Math.abs(checkOutDate - checkInDate);
+      const calculatedNights = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+      
+      setNights(calculatedNights);
+      const price = hotel.price * calculatedNights;
+      
+      console.log(`Calculation: ${hotel.price} × ${calculatedNights} nights = ${price}`);
+      setTotalPrice(price);
+    } catch (err) {
+      console.error("Error calculating price:", err);
+      setTotalPrice(0);
+      setNights(0);
+    }
+  };
+  
+  const handleCheckInChange = (e) => {
+    setCheckIn(e.target.value);
+  };
+  
+  const handleCheckOutChange = (e) => {
+    setCheckOut(e.target.value);
   };
   
   const checkAvailability = async () => {
@@ -71,6 +138,7 @@ const BookHotel = () => {
       );
       
       setAvailability(response.data);
+      calculateTotalPrice(); // Ensure price is calculated after availability check
       setCheckingAvailability(false);
     } catch (err) {
       setError('Failed to check availability. Please try again.');
@@ -109,16 +177,6 @@ const BookHotel = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create booking');
     }
-  };
-  
-  const getTotalPrice = () => {
-    if (!hotel || !checkIn || !checkOut) return 0;
-    
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-    const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-    
-    return hotel.price * nights;
   };
   
   if (loading) {
@@ -164,7 +222,7 @@ const BookHotel = () => {
             <input 
               type="date" 
               value={checkIn} 
-              onChange={(e) => setCheckIn(e.target.value)}
+              onChange={handleCheckInChange}
               min={new Date().toISOString().split('T')[0]}
               required
             />
@@ -175,7 +233,7 @@ const BookHotel = () => {
             <input 
               type="date" 
               value={checkOut} 
-              onChange={(e) => setCheckOut(e.target.value)}
+              onChange={handleCheckOutChange}
               min={checkIn || new Date().toISOString().split('T')[0]}
               required
             />
@@ -192,10 +250,17 @@ const BookHotel = () => {
             />
           </div>
           
+          {checkIn && checkOut && nights > 0 && (
+            <div className="price-preview">
+              <p>Selected Stay: <strong>{nights} night{nights !== 1 ? 's' : ''}</strong></p>
+              <p className="preview-price">Estimated Price: <strong>${totalPrice}</strong> (${hotel?.price} × {nights} nights)</p>
+            </div>
+          )}
+          
           <button 
             className="check-availability-button" 
             onClick={checkAvailability}
-            disabled={checkingAvailability}
+            disabled={checkingAvailability || !checkIn || !checkOut}
           >
             {checkingAvailability ? 'Checking...' : 'Check Availability'}
           </button>
@@ -225,8 +290,11 @@ const BookHotel = () => {
                   <p>
                     <strong>Guests:</strong> {guests}
                   </p>
+                  <p>
+                    <strong>Length of Stay:</strong> {nights} night{nights !== 1 ? 's' : ''}
+                  </p>
                   <p className="total-price">
-                    <strong>Total Price:</strong> ${getTotalPrice()}
+                    <strong>Total Price:</strong> ${totalPrice}
                   </p>
                   
                   <button className="book-now-button" onClick={handleBooking}>
