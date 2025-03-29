@@ -7,11 +7,13 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
     
     try {
       const response = await axios.post("http://localhost:5000/login", { email, password });
@@ -20,9 +22,10 @@ const Login = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.result));
       
-      alert("Login successful");
+      setIsLoading(false);
       navigate('/'); // Redirect to home page
     } catch (error) {
+      setIsLoading(false);
       if (error.response && error.response.data && error.response.data.message) {
         setError(error.response.data.message);
       } else {
@@ -34,30 +37,43 @@ const Login = () => {
   return (
     <div className="login-container">
       <form onSubmit={handleLogin} className="login-form">
-        <h2 className="form-title">Login</h2>
+        <h2 className="form-title">Welcome Back</h2>
+        
         {error && <div className="error-message">{error}</div>}
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="form-input"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="form-input"
-          required
-        />
-        <button type="submit" className="submit-button">
-          Login
+        
+        <div className="form-input-group">
+          <span className="input-icon">✉️</span>
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="form-input"
+            required
+          />
+        </div>
+        
+        <div className="form-input-group">
+          <span className="input-icon">🔒</span>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="form-input"
+            required
+          />
+        </div>
+        
+        <button type="submit" className="submit-button" disabled={isLoading}>
+          {isLoading ? 'Logging in...' : 'Login'}
         </button>
-        <Link to="/signup" className="signup-link">
-          Don't have an account? Sign up
-        </Link>
+        
+        <div className="auth-links">
+          <Link to="/signup" className="signup-link">
+            Don't have an account? Create one now
+          </Link>
+        </div>
       </form>
     </div>
   );
