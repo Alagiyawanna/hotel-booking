@@ -5,6 +5,7 @@ import './hotel.css';
 import Navbar from './navbar';
 import Footer from './footer';
 import HeroSection from './hero';
+import config from '../config';
 
 const Hotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -15,7 +16,7 @@ const Hotels = () => {
   }, []);
 
   const fetchHotels = (query = '') => {
-    axios.get(`http://localhost:5000/api/hotels${query}`)
+    axios.get(`${config.API_URL}/api/hotels${query}`)
       .then(response => setHotels(response.data))
       .catch(err => console.log(err));
   };

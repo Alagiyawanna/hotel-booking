@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from './navbar';
 import Footer from './footer';
 import './profile.css';
+import config from '../config';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -36,7 +37,7 @@ const Profile = () => {
   const fetchBookings = async (token) => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/bookings/my-bookings', {
+      const response = await axios.get(`${config.API_URL}/api/bookings/my-bookings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -78,7 +79,7 @@ const Profile = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {}, {
+      await axios.patch(`${config.API_URL}/api/bookings/${bookingId}/cancel`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -127,7 +128,7 @@ const Profile = () => {
       const token = localStorage.getItem('token');
       
       await axios.patch(
-        `http://localhost:5000/api/bookings/${extendBookingId}/extend`, 
+        `${config.API_URL}/api/bookings/${extendBookingId}/extend`, 
         { newCheckOut }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from './navbar';
 import Footer from './footer';
 import './BookHotel.css';
+import config from '../config';
 
 const BookHotel = () => {
   const { hotelId } = useParams();
@@ -44,7 +45,7 @@ const BookHotel = () => {
   const fetchHotel = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/hotels`)
+      const response = await axios.get(`${config.API_URL}/api/hotels`)
         .catch((err) => {
           console.error("Error fetching all hotels:", err);
           return { data: [] };
@@ -133,7 +134,7 @@ const BookHotel = () => {
       setError('');
       
       const response = await axios.get(
-        `http://localhost:5000/api/bookings/availability/${hotelId}`,
+        `${config.API_URL}/api/bookings/availability/${hotelId}`,
         { params: { checkIn, checkOut } }
       );
       
@@ -160,7 +161,7 @@ const BookHotel = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/api/bookings',
+        `${config.API_URL}/api/bookings`,
         {
           hotelId,
           checkIn,

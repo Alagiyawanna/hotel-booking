@@ -6,6 +6,7 @@ import Footer from './footer';
 import AboutUs from './AboutUs';
 import Slideshow from './Slideshow';
 import './home.css';
+import config from '../config';
 
 const Home = () => {
     const [hotels, setHotels] = useState([]);
@@ -18,7 +19,7 @@ const Home = () => {
 
     const fetchHotels = () => {
         setLoading(true);
-        axios.get('http://localhost:5000/api/hotels')
+        axios.get(`${config.API_URL}/api/hotels`)
             .then(response => { 
                 setHotels(response.data);
                 setLoading(false);

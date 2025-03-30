@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import './login.css';
+import config from '../config';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      const response = await axios.post("http://localhost:5000/login", { email, password });
+      const response = await axios.post(`${config.API_URL}/login`, { email, password });
       
       // Store user info and token in localStorage
       localStorage.setItem('token', response.data.token);
