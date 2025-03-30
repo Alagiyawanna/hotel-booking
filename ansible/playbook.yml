@@ -1,23 +1,136 @@
+# ---
+# - name: Deploy Hotel Booking Application to EC2
+#   hosts: ec2_instances
+#   become: yes
+#   vars:
+#     mongo_uri: "{{ lookup('env', 'MONGO_URI') }}"
+#     jwt_secret: "{{ lookup('env', 'JWT_SECRET') }}"
+  
+#   tasks:
+#     - name: Update apt cache
+#       apt:
+#         update_cache: yes
+#         cache_valid_time: 3600
+
+#     - name: Install required packages
+#       apt:
+#         name:
+#           - docker.io
+#           - docker-compose
+#           - python3-docker
+#         state: present
+
+#     - name: Ensure Docker service is running
+#       service:
+#         name: docker
+#         state: started
+#         enabled: yes
+
+#     - name: Add current user to docker group
+#       user:
+#         name: "{{ ansible_user }}"
+#         groups: docker
+#         append: yes
+
+#     - name: Reset ssh connection to allow user changes to affect the current session
+#       meta: reset_connection
+
+#     - name: Create application directory
+#       file:
+#         path: /opt/hotel-booking
+#         state: directory
+#         owner: "{{ ansible_user }}"
+#         group: "{{ ansible_user }}"
+#         mode: '0755'
+
+#     - name: Create .env file
+#       copy:
+#         dest: /opt/hotel-booking/.env
+#         content: |
+#           MONGO_URI={{ mongo_uri }}
+#           JWT_SECRET={{ jwt_secret }}
+#         mode: '0600'
+#         owner: "{{ ansible_user }}"
+#         group: "{{ ansible_user }}"
+
+#     - name: Copy docker-compose.yml template
+#       template:
+#         src: templates/docker-compose.yml.j2
+#         dest: /opt/hotel-booking/docker-compose.yml
+#         mode: '0644'
+#         owner: "{{ ansible_user }}"
+#         group: "{{ ansible_user }}"
+
+#     - name: Login to DockerHub
+#       docker_login:
+#         username: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
+#         password: "{{ lookup('env', 'DOCKERHUB_PASSWORD') }}"
+#       no_log: true
+
+#     - name: Pull latest Docker images
+#       become: true
+#       become_user: "{{ ansible_user }}"
+#       docker_image:
+#         name: "{{ item }}"
+#         source: pull
+#       loop:
+#         - "kalagiyawanna/staysphere-backend:latest"
+#         - "kalagiyawanna/staysphere-signin:latest"
+
+#     - name: Deploy application with docker-compose
+#       become: true
+#       become_user: "{{ ansible_user }}"
+#       command: docker-compose up -d
+#       args:
+#         chdir: /opt/hotel-booking
+
+#     - name: Create swap file
+#       command: dd if=/dev/zero of=/swapfile bs=1M count=2048
+#       args:
+#         creates: /swapfile
+      
+#     - name: Set swap file permissions
+#       file:
+#         path: /swapfile
+#         mode: '0600'
+        
+#     - name: Make swap
+#       command: mkswap /swapfile
+      
+#     - name: Enable swap
+#       command: swapon /swapfile
+      
+#     - name: Add swap to fstab
+#       lineinfile:
+#         path: /etc/fstab
+#         line: "/swapfile none swap sw 0 0"
+#         create: yes
+        
+#     - name: Install monitoring tools
+#       apt:
+#         name:
+#           - htop
+#           - sysstat
+#         state: present
+
+
+
 ---
 - name: Deploy Hotel Booking Application to EC2
   hosts: ec2_instances
-  become: yes
-  vars:
-    mongo_uri: "{{ lookup('env', 'MONGO_URI') }}"
-    jwt_secret: "{{ lookup('env', 'JWT_SECRET') }}"
-  
+  become: true
+
   tasks:
     - name: Update apt cache
       apt:
         update_cache: yes
-        cache_valid_time: 3600
 
     - name: Install required packages
       apt:
         name:
           - docker.io
-          - docker-compose
           - python3-docker
+          - docker-compose
         state: present
 
     - name: Ensure Docker service is running
@@ -26,60 +139,53 @@
         state: started
         enabled: yes
 
-    - name: Add current user to docker group
+    - name: Create app directory
+      file:
+        path: /home/ubuntu/staysphere
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+
+    - name: Create docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: /home/ubuntu/staysphere/docker-compose.yml
+        owner: ubuntu
+        group: ubuntu
+        mode: "0644"
+
+    - name: Pull Docker images
+      docker_image:
+        name: "{{ item }}"
+        source: pull
+      loop:
+        - "{{ docker_registry }}/staysphere-backend:latest"
+        - "{{ docker_registry }}/staysphere-signin:latest"
+
+    - name: Add ubuntu user to docker group
       user:
-        name: "{{ ansible_user }}"
+        name: ubuntu
         groups: docker
         append: yes
 
     - name: Reset ssh connection to allow user changes to affect the current session
       meta: reset_connection
 
-    - name: Create application directory
-      file:
-        path: /opt/hotel-booking
-        state: directory
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0755'
-
-    - name: Create .env file
-      copy:
-        dest: /opt/hotel-booking/.env
-        content: |
-          MONGO_URI={{ mongo_uri }}
-          JWT_SECRET={{ jwt_secret }}
-        mode: '0600'
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-
-    - name: Copy docker-compose.yml template
-      template:
-        src: templates/docker-compose.yml.j2
-        dest: /opt/hotel-booking/docker-compose.yml
-        mode: '0644'
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-
-    - name: Login to DockerHub
-      docker_login:
-        username: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
-        password: "{{ lookup('env', 'DOCKERHUB_PASSWORD') }}"
-      no_log: true
-
-    - name: Pull latest Docker images
+    - name: Run docker-compose
       become: true
-      become_user: "{{ ansible_user }}"
-      docker_image:
-        name: "{{ item }}"
-        source: pull
-      loop:
-        - "kalagiyawanna/staysphere-backend:latest"
-        - "kalagiyawanna/staysphere-frontend:latest"
-
-    - name: Deploy application with docker-compose
-      become: true
-      become_user: "{{ ansible_user }}"
+      become_user: ubuntu
       command: docker-compose up -d
       args:
-        chdir: /opt/hotel-booking
+        chdir: /home/ubuntu/staysphere
+
+    - name: Verify containers are running
+      become_user: ubuntu
+      command: docker ps
+      args:
+        chdir: /home/ubuntu/staysphere
+      register: docker_ps_result
+
+    - name: Show running containers
+      debug:
+        var: docker_ps_result.stdout_lines

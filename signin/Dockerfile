@@ -1,6 +1,9 @@
 # Use the official Node.js image as the base image
 FROM node:18-alpine
 
+ENV NODE_OPTIONS="--max-old-space-size=300"
+ENV NODE_ENV=production
+
 # Set the working directory
 WORKDIR /app
 
