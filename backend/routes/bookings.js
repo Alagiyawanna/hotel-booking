@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/booking');
 const Hotel = require('../models/hotels');
-const { auth } = require('../middleware/auth');
+const auth = require('../middleware/auth');
 
 // Create a new booking
 router.post('/', auth, async (req, res) => {

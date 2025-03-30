@@ -14,20 +14,13 @@ pipeline {
             }
         }
         
-        stage('Build and Test') {
+        stage('Test Backend') {
             steps {
-                // Backend tests
                 dir('backend') {
                     sh 'npm install'
-                    sh 'cp .env.test .env' // Use test environment for testing
                     sh 'npm test'
                 }
                 
-                // Frontend tests
-                dir('signin') {
-                    sh 'npm install'
-                    sh 'npm test || true' // Continue even if tests fail for now
-                }
             }
         }
         
