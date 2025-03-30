@@ -6,5 +6,6 @@ variable "aws_region" {
 
 variable "instance_id" {
   description = "ID of the existing EC2 instance"
-  type        = string
+  type        = string
+  default     = "i-016d05fdf5fd9623c"
 }
