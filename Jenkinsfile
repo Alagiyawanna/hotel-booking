@@ -72,14 +72,19 @@ pipeline {
             steps {
                 withCredentials([
                     string(credentialsId: 'MONGO_URI', variable: 'MONGO_URI'),
-                    string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET'),
-                    string(credentialsId: 'DOCKERHUB_USERNAME', variable: 'DOCKERHUB_USERNAME'),
-                    string(credentialsId: 'DOCKERHUB_PASSWORD', variable: 'DOCKERHUB_PASSWORD')
+                    string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET')
                 ]) {
-                    sh 'cd ansible && ansible-playbook -i inventory.ini playbook.yml'
+                    sh '''
+                        cd ansible
+                        export DOCKERHUB_USERNAME=$DOCKERHUB_CREDENTIALS_USR
+                        export DOCKERHUB_PASSWORD=$DOCKERHUB_CREDENTIALS_PSW
+                        ansible-playbook -i inventory.ini playbook.yml
+                    '''
                 }
             }
         }
+            
+    }
     }
     
     post {
