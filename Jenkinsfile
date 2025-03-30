@@ -16,7 +16,7 @@ pipeline {
         stage('Build Images') {
             steps {
                 sh 'docker build -t kalagiyawanna/staysphere-backend:latest ./backend'
-                sh 'docker build -t kalagiyawanna/staysphere-frontend:latest ./frontend'
+                sh 'docker build -t kalagiyawanna/staysphere-frontend:latest ./signin'
             }
         }
         
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                 sh 'docker push kalagiyawanna/staysphere-backend:latest'
-                sh 'docker push kalagiyawanna/staysphere-frontend:latest'
+                sh 'docker push kalagiyawanna/staysphere-signin:latest'
             }
         }
         
