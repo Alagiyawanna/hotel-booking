@@ -1,11 +1,11 @@
 pipeline {
     agent any
     
-    environment {
-        // AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        // AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        // TF_IN_AUTOMATION = 'true'
-    }
+    // environment {
+    //     AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+    //     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+    //     TF_IN_AUTOMATION = 'true'
+    // }
     
     stages {
         stage('Checkout') {
