@@ -16,7 +16,7 @@ pipeline {
         stage('Build Images') {
             steps {
                 sh 'docker build -t kalagiyawanna/staysphere-backend:latest ./backend'
-                sh 'docker build -t kalagiyawanna/staysphere-frontend:latest ./signin'
+                sh 'docker build -t kalagiyawanna/staysphere-signin:latest ./signin'
             }
         }
         
