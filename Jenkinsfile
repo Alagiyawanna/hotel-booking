@@ -91,11 +91,28 @@ pipeline {
                         # For debugging SSH connections
                         export ANSIBLE_HOST_KEY_CHECKING=False
                         
-                        # Run Ansible playbook from the workspace but using the key in the temporary location
+                        # Get the instance DNS from terraform output
+                        cd terraform
+                        INSTANCE_DNS=$(terraform output -raw instance_public_dns)
+                        cd ..
+                        
+                        echo "Attempting to connect to EC2 instance at $INSTANCE_DNS"
+                        
+                        # Test SSH connection
+                        ssh -o StrictHostKeyChecking=no -i "${TEMP_DIR}/hotel-booking.pem" -T ubuntu@$INSTANCE_DNS "echo SSH connection successful" || {
+                            echo "Failed to connect to EC2 instance via SSH. Verifying SSH key and security group settings."
+                            exit 1
+                        }
+                        
+                        # Run Ansible playbook with the correct inventory
                         cd ansible
-                        ansible-playbook -i inventory.ini playbook.yml -v --private-key="${TEMP_DIR}/hotel-booking.pem"
+                        echo "[ec2_instances]" > temp_inventory.ini
+                        echo "hotel-booking ansible_host=$INSTANCE_DNS ansible_user=ubuntu" >> temp_inventory.ini
+                        
+                        ansible-playbook -i temp_inventory.ini playbook.yml -v --private-key="${TEMP_DIR}/hotel-booking.pem"
                         
                         # Clean up
+                        rm -f temp_inventory.ini
                         rm -f "${TEMP_DIR}/hotel-booking.pem"
                         rmdir "${TEMP_DIR}"
                     '''
