@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:20
+FROM node:18-alpine
 
 # Set the working directory
 WORKDIR /app
@@ -15,9 +15,6 @@ COPY . .
 
 # Build the application
 RUN npm run build
-
-# Install serve globally
-RUN npm install -g serve
 
 # Expose the port the app runs on
 EXPOSE 3000

@@ -31,22 +31,22 @@ pipeline {
             }
         }
         
-        stage('Provision Infrastructure') {
-            steps {
-                dir('terraform') {
-                    sh 'terraform init'
-                    sh 'terraform apply -auto-approve -var="key_name=your-aws-key-name"'
-                }
-            }
-        }
+        // stage('Provision Infrastructure') {
+        //     steps {
+        //         dir('terraform') {
+        //             sh 'terraform init'
+        //             sh 'terraform apply -auto-approve -var="key_name=your-aws-key-name"'
+        //         }
+        //     }
+        // }
         
-        stage('Deploy Application') {
-            steps {
-                dir('ansible') {
-                    sh 'ansible-playbook playbook.yml'
-                }
-            }
-        }
+        // stage('Deploy Application') {
+        //     steps {
+        //         dir('ansible') {
+        //             sh 'ansible-playbook playbook.yml'
+        //         }
+        //     }
+        // }
     }
     
     post {
