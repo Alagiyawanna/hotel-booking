@@ -63,15 +63,23 @@ const Hotels = () => {
         <div className="hotels-grid">
           {hotels.map(hotel => (
             <div key={hotel._id} className="hotel-card">
-              <img src={hotel.image} alt={hotel.name} className="hotel-image" />
-              <h2 className="hotel-name">{hotel.name}</h2>
-              <p className="hotel-location">{hotel.location}</p>
-              <p className="hotel-price">${hotel.price} / night</p>
-              <p className="hotel-rooms">Rooms: {hotel.rooms || 0}</p>
-              <p className="hotel-description">{hotel.description}</p>
-              <button className="book-button" onClick={() => handleBookNow(hotel._id)}>
-                Book Now
-              </button>
+              <div className="hotel-image-container">
+                <img src={hotel.image} alt={hotel.name} className="hotel-image" />
+              </div>
+              <div className="hotel-content">
+                <h2 className="hotel-name">{hotel.name}</h2>
+                <p className="hotel-location">{hotel.location}</p>
+                <p className="hotel-price">${hotel.price} / night</p>
+                <p className="hotel-rooms">
+                  Rooms: <span className={hotel.availableRooms > 0 ? 'rooms-available' : 'rooms-unavailable'}>
+                    {hotel.availableRooms !== undefined ? hotel.availableRooms : hotel.rooms}
+                  </span>
+                </p>
+                <p className="hotel-description">{hotel.description}</p>
+                <button className="book-button" onClick={() => handleBookNow(hotel._id)}>
+                  Book Now
+                </button>
+              </div>
             </div>
           ))}
         </div>

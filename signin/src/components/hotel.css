@@ -37,22 +37,21 @@
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  height: 100%;
+  height: 350px; /* Fixed height for uniform cards */
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
               box-shadow 0.3s ease;
+  position: relative;
 }
 
 .hotel-card:hover {
-  transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
 }
 
 .hotel-image-container {
-  position: relative;
   width: 100%;
-  height: 0;
-  padding-bottom: 60%;
+  height: 100%;
   overflow: hidden;
+  z-index: 1;
 }
 
 .hotel-image {
@@ -71,17 +70,43 @@
 }
 
 .hotel-content {
-  padding: var(--spacing-lg);
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  padding: var(--spacing-lg);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 3;
+}
+
+.hotel-card:hover .hotel-content {
+  transform: translateY(0);
 }
 
 .hotel-name {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
   color: var(--text-primary);
+}
+
+.hotel-name-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+  padding: var(--spacing-lg);
+  z-index: 2;
+}
+
+.hotel-name-overlay h2 {
+  color: white;
+  margin: 0;
+  font-size: 1.4rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hotel-location {
@@ -123,6 +148,7 @@
   margin-bottom: var(--spacing-lg);
   line-height: 1.5;
   flex-grow: 1;
+  overflow-y: auto; /* Allow scrolling if description is long */
 }
 
 .book-button {
@@ -134,16 +160,20 @@
   border-radius: var(--radius-md);
   font-weight: 500;
   font-size: 1rem;
-  transition: background-color var(--transition-fast);
+  transition: all 0.2s ease;
   margin-top: auto;
+  cursor: pointer;
+  z-index: 2;
 }
 
 .book-button:hover {
   background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-  .hotels-grid {
-    grid-template-columns: 1fr;
+
+@media (prefers-reduced-motion: reduce) {
+  .hotel-content, .hotel-image {
+    transition: none;
   }
 }
