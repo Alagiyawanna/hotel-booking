@@ -12,6 +12,15 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage('Test Backend') {
+            steps {
+                dir('backend') {
+                    sh 'npm install'
+                    sh 'npm test'
+                }
+            }
+        }
         
         stage('Build Images') {
             steps {
@@ -28,45 +37,30 @@ pipeline {
             }
         }
         
-        stage('Terraform Init') {
+                stage('Terraform Init') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                    sh '''
-                        cd terraform
-                        terraform init
-                    '''
-                }
+                sh '''
+                    cd terraform
+                    terraform init
+                '''
             }
         }
         
         stage('Terraform Plan') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                    sh '''
-                        cd terraform
-                        terraform plan -out=tfplan
-                    '''
-                }
+                sh '''
+                    cd terraform
+                    terraform plan -out=tfplan
+                '''
             }
         }
         
         stage('Terraform Apply') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                    sh '''
-                        cd terraform
-                        terraform apply -auto-approve tfplan
-                    '''
-                }
+                sh '''
+                    cd terraform
+                    terraform apply -auto-approve tfplan
+                '''
             }
         }
         
