@@ -52,7 +52,7 @@ resource "aws_security_group" "staysphere_sg" {
 # Attach the security group to the existing instance
 resource "aws_network_interface_sg_attachment" "sg_attachment" {
   security_group_id    = aws_security_group.staysphere_sg.id
-  network_interface_id = data.aws_instance.staysphere_instance.primary_network_interface_id
+  network_interface_id = data.aws_instance.staysphere_instance.network_interface_ids[0]
 }
 
 # Output the instance details
