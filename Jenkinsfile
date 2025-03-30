@@ -3,10 +3,10 @@ pipeline {
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        DOCKER_IMAGE_BACKEND = "yourdockerhubusername/staysphere-backend:${BUILD_NUMBER}"
-        DOCKER_IMAGE_FRONTEND = "yourdockerhubusername/staysphere-frontend:${BUILD_NUMBER}"
-        DOCKER_IMAGE_BACKEND_LATEST = "yourdockerhubusername/staysphere-backend:latest"
-        DOCKER_IMAGE_FRONTEND_LATEST = "yourdockerhubusername/staysphere-frontend:latest"
+        DOCKER_IMAGE_BACKEND = "kalagiyawanna/staysphere-backend:${BUILD_NUMBER}"
+        DOCKER_IMAGE_FRONTEND = "kalagiyawanna/staysphere-frontend:${BUILD_NUMBER}"
+        DOCKER_IMAGE_BACKEND_LATEST = "kalagiyawanna/staysphere-backend:latest"
+        DOCKER_IMAGE_FRONTEND_LATEST = "kalagiyawanna/staysphere-frontend:latest"
     }
     
     stages {
