@@ -20,10 +20,11 @@
           - python3-docker
         state: present
 
-    - name: Install Docker Python module
-      apt:
-        name: python3-docker
-        state: present
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
 
     - name: Add current user to docker group
       user:
@@ -31,16 +32,15 @@
         groups: docker
         append: yes
 
-    - name: Start and enable Docker service
-      systemd:
-        name: docker
-        state: started
-        enabled: yes
+    - name: Reset ssh connection to allow user changes to affect the current session
+      meta: reset_connection
 
     - name: Create application directory
       file:
         path: /opt/hotel-booking
         state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: '0755'
 
     - name: Create .env file
@@ -50,12 +50,16 @@
           MONGO_URI={{ mongo_uri }}
           JWT_SECRET={{ jwt_secret }}
         mode: '0600'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
 
     - name: Copy docker-compose.yml template
       template:
         src: templates/docker-compose.yml.j2
         dest: /opt/hotel-booking/docker-compose.yml
         mode: '0644'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
 
     - name: Login to DockerHub
       docker_login:
@@ -64,7 +68,18 @@
       no_log: true
 
     - name: Pull latest Docker images
-      shell: cd /opt/hotel-booking && docker-compose pull
+      become: true
+      become_user: "{{ ansible_user }}"
+      docker_image:
+        name: "{{ item }}"
+        source: pull
+      loop:
+        - "kalagiyawanna/staysphere-backend:latest"
+        - "kalagiyawanna/staysphere-frontend:latest"
 
     - name: Deploy application with docker-compose
-      shell: cd /opt/hotel-booking && docker-compose up -d
+      become: true
+      become_user: "{{ ansible_user }}"
+      command: docker-compose up -d
+      args:
+        chdir: /opt/hotel-booking

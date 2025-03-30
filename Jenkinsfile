@@ -76,12 +76,13 @@ pipeline {
                     file(credentialsId: 'ec2-ssh-key-file', variable: 'SSH_KEY_FILE')
                 ]) {
                     sh '''
-                        # Create a temporary directory with right permissions
-                        mkdir -p /tmp/ansible-deploy
+                        # Create a temporary directory in the Jenkins workspace
+                        TEMP_DIR="${WORKSPACE}/ansible-deploy-temp"
+                        mkdir -p "${TEMP_DIR}"
                         
                         # Copy the SSH key to the temporary directory with proper permissions
-                        cp $SSH_KEY_FILE /tmp/ansible-deploy/hotel-booking.pem
-                        chmod 400 /tmp/ansible-deploy/hotel-booking.pem
+                        cp "$SSH_KEY_FILE" "${TEMP_DIR}/hotel-booking.pem"
+                        chmod 600 "${TEMP_DIR}/hotel-booking.pem"
                         
                         # Set Docker Hub credentials
                         export DOCKERHUB_USERNAME=$DOCKERHUB_CREDENTIALS_USR
@@ -92,10 +93,11 @@ pipeline {
                         
                         # Run Ansible playbook from the workspace but using the key in the temporary location
                         cd ansible
-                        ansible-playbook -i inventory.ini playbook.yml -v --private-key=/tmp/ansible-deploy/hotel-booking.pem
+                        ansible-playbook -i inventory.ini playbook.yml -v --private-key="${TEMP_DIR}/hotel-booking.pem"
                         
                         # Clean up
-                        rm -f /tmp/ansible-deploy/hotel-booking.pem
+                        rm -f "${TEMP_DIR}/hotel-booking.pem"
+                        rmdir "${TEMP_DIR}"
                     '''
                 }
             }
