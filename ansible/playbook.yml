@@ -21,8 +21,8 @@
         state: present
 
     - name: Install Docker Python module
-      pip:
-        name: docker
+      apt:
+        name: python3-docker
         state: present
 
     - name: Add current user to docker group
