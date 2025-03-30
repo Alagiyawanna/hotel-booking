@@ -64,16 +64,6 @@ pipeline {
                     export AWS_ACCESS_KEY_ID=$AWS_CREDENTIALS_USR
                     export AWS_SECRET_ACCESS_KEY=$AWS_CREDENTIALS_PSW
                     terraform apply -auto-approve tfplan
-                    
-                    # Get the public IP address from Terraform output
-                    PUBLIC_IP=$(terraform output -raw instance_public_ip)
-                    echo "EC2 Instance Public IP: $PUBLIC_IP"
-                    
-                    # Create a dynamic inventory for Ansible
-                    echo "[ec2_instances]" > ../ansible/inventory.ini
-                    echo "hotel-booking ansible_host=$PUBLIC_IP ansible_user=ubuntu" >> ../ansible/inventory.ini
-                    
-                    cat ../ansible/inventory.ini
                 '''
             }
         }
@@ -120,20 +110,6 @@ pipeline {
         }
         success {
             echo 'Pipeline completed successfully!'
-            
-            sh '''
-                cd terraform
-                export AWS_ACCESS_KEY_ID=$AWS_CREDENTIALS_USR
-                export AWS_SECRET_ACCESS_KEY=$AWS_CREDENTIALS_PSW
-                
-                # Output the application URL for easy access
-                PUBLIC_IP=$(terraform output -raw instance_public_ip)
-                echo "========================================================"
-                echo "Application is deployed successfully!"
-                echo "Frontend URL: http://$PUBLIC_IP:3000"
-                echo "Backend API URL: http://$PUBLIC_IP:5000"
-                echo "========================================================"
-            '''
         }
         failure {
             echo 'Pipeline failed!'
