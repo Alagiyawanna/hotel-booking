@@ -1,53 +1,70 @@
 ---
-- name: Setup Docker and deploy app
-  hosts: all
+- name: Deploy Hotel Booking Application to EC2
+  hosts: ec2_instances
   become: yes
+  vars:
+    mongo_uri: "{{ lookup('env', 'MONGO_URI') }}"
+    jwt_secret: "{{ lookup('env', 'JWT_SECRET') }}"
+  
   tasks:
-    - name: Update all packages
-      yum:
-        name: "*"
-        state: latest
-        update_only: yes
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
 
-    - name: Install Docker dependencies
-      yum:
+    - name: Install required packages
+      apt:
         name:
-          - yum-utils
-          - device-mapper-persistent-data
-          - lvm2
+          - docker.io
+          - docker-compose
+          - python3-pip
         state: present
 
-    - name: Add Docker repo
-      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-    - name: Install Docker
-      yum:
-        name: docker-ce
+    - name: Install Docker Python module
+      pip:
+        name: docker
         state: present
 
-    - name: Start Docker service
-      service:
+    - name: Add current user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Start and enable Docker service
+      systemd:
         name: docker
         state: started
         enabled: yes
 
-    - name: Install Docker Compose
-      get_url:
-        url: https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64
-        dest: /usr/local/bin/docker-compose
+    - name: Create application directory
+      file:
+        path: /opt/hotel-booking
+        state: directory
         mode: '0755'
 
-    - name: Create app directory
-      file:
-        path: /app
-        state: directory
-
-    - name: Copy project files
+    - name: Create .env file
       copy:
-        src: ../
-        dest: /app/
+        dest: /opt/hotel-booking/.env
+        content: |
+          MONGO_URI={{ mongo_uri }}
+          JWT_SECRET={{ jwt_secret }}
+        mode: '0600'
 
-    - name: Deploy application with Docker Compose
-      command: docker-compose up -d
-      args:
-        chdir: /app
+    - name: Copy docker-compose.yml template
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: /opt/hotel-booking/docker-compose.yml
+        mode: '0644'
+
+    - name: Login to DockerHub
+      docker_login:
+        username: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
+        password: "{{ lookup('env', 'DOCKERHUB_PASSWORD') }}"
+      no_log: true
+
+    - name: Pull latest Docker images
+      shell: cd /opt/hotel-booking && docker-compose pull
+
+    - name: Deploy application with docker-compose
+      shell: cd /opt/hotel-booking && docker-compose up -d

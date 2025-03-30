@@ -3,10 +3,7 @@ pipeline {
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        DOCKER_IMAGE_BACKEND = "kalagiyawanna/staysphere-backend:${BUILD_NUMBER}"
-        DOCKER_IMAGE_FRONTEND = "kalagiyawanna/staysphere-frontend:${BUILD_NUMBER}"
-        DOCKER_IMAGE_BACKEND_LATEST = "kalagiyawanna/staysphere-backend:latest"
-        DOCKER_IMAGE_FRONTEND_LATEST = "kalagiyawanna/staysphere-frontend:latest"
+        AWS_CREDENTIALS = credentials('aws-credentials')
     }
     
     stages {
@@ -16,61 +13,73 @@ pipeline {
             }
         }
         
-        stage('Test Backend') {
+        stage('Build Images') {
             steps {
-                dir('backend') {
-                    sh 'npm install'
-                    sh 'npm test'
-                }
+                sh 'docker build -t kalagiyawanna/staysphere-backend:latest ./backend'
+                sh 'docker build -t kalagiyawanna/staysphere-frontend:latest ./frontend'
             }
         }
         
-        stage('Login to DockerHub') {
+        stage('Push Images') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                echo 'Login Successful'
+                sh 'docker push kalagiyawanna/staysphere-backend:latest'
+                sh 'docker push kalagiyawanna/staysphere-frontend:latest'
             }
         }
         
-        stage('Build Docker Images') {
-            parallel {
-                stage('Build Backend Image') {
-                    steps {
-                        dir('backend') {
-                            sh "docker build -t ${DOCKER_IMAGE_BACKEND} -t ${DOCKER_IMAGE_BACKEND_LATEST} ."
-                            echo 'Backend Image Build Successful'
-                        }
-                    }
-                }
-                
-                stage('Build Frontend Image') {
-                    steps {
-                        dir('signin') {
-                            sh "docker build -t ${DOCKER_IMAGE_FRONTEND} -t ${DOCKER_IMAGE_FRONTEND_LATEST} ."
-                            echo 'Frontend Image Build Successful'
-                        }
-                    }
+        stage('Terraform Init') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        cd terraform
+                        terraform init
+                    '''
                 }
             }
         }
         
-        stage('Push Docker Images') {
+        stage('Terraform Plan') {
             steps {
-                sh "docker push ${DOCKER_IMAGE_BACKEND}"
-                sh "docker push ${DOCKER_IMAGE_BACKEND_LATEST}"
-                sh "docker push ${DOCKER_IMAGE_FRONTEND}"
-                sh "docker push ${DOCKER_IMAGE_FRONTEND_LATEST}"
-                echo 'All Images Pushed Successfully'
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        cd terraform
+                        terraform plan -out=tfplan
+                    '''
+                }
             }
         }
         
-        stage('Clean Up') {
+        stage('Terraform Apply') {
             steps {
-                sh "docker rmi ${DOCKER_IMAGE_BACKEND}"
-                sh "docker rmi ${DOCKER_IMAGE_BACKEND_LATEST}"
-                sh "docker rmi ${DOCKER_IMAGE_FRONTEND}"
-                sh "docker rmi ${DOCKER_IMAGE_FRONTEND_LATEST}"
-                echo 'Local images removed'
+                withCredentials([
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        cd terraform
+                        terraform apply -auto-approve tfplan
+                    '''
+                }
+            }
+        }
+        
+        stage('Deploy to EC2') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'MONGO_URI', variable: 'MONGO_URI'),
+                    string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET'),
+                    string(credentialsId: 'DOCKERHUB_USERNAME', variable: 'DOCKERHUB_USERNAME'),
+                    string(credentialsId: 'DOCKERHUB_PASSWORD', variable: 'DOCKERHUB_PASSWORD')
+                ]) {
+                    sh 'cd ansible && ansible-playbook -i inventory.ini playbook.yml'
+                }
             }
         }
     }
@@ -78,12 +87,6 @@ pipeline {
     post {
         always {
             sh 'docker logout'
-        }
-        failure {
-            echo 'Pipeline failed'
-        }
-        success {
-            echo 'Pipeline succeeded'
         }
     }
 }

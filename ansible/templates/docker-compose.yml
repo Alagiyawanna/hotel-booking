@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    image: kalagiyawanna/staysphere-backend:latest
+    container_name: hotel-booking-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI={{ mongo_uri }}
+      - JWT_SECRET={{ jwt_secret }}
+    networks:
+      - hotel-booking-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/hotels"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    image: kalagiyawanna/staysphere-frontend:latest
+    container_name: hotel-booking-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - hotel-booking-network
+
+networks:
+  hotel-booking-network:
+    driver: bridge
