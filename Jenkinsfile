@@ -76,11 +76,12 @@ pipeline {
                     file(credentialsId: 'ec2-ssh-key-file', variable: 'SSH_KEY_FILE')
                 ]) {
                     sh '''
-                        cd ansible
+                        # Create a temporary directory with right permissions
+                        mkdir -p /tmp/ansible-deploy
                         
-                        # Copy the SSH key to the working directory with proper permissions
-                        cp $SSH_KEY_FILE hotel-booking.pem
-                        chmod 400 hotel-booking.pem
+                        # Copy the SSH key to the temporary directory with proper permissions
+                        cp $SSH_KEY_FILE /tmp/ansible-deploy/hotel-booking.pem
+                        chmod 400 /tmp/ansible-deploy/hotel-booking.pem
                         
                         # Set Docker Hub credentials
                         export DOCKERHUB_USERNAME=$DOCKERHUB_CREDENTIALS_USR
@@ -89,8 +90,12 @@ pipeline {
                         # For debugging SSH connections
                         export ANSIBLE_HOST_KEY_CHECKING=False
                         
-                        # Run Ansible playbook
-                        ansible-playbook -i inventory.ini playbook.yml -v
+                        # Run Ansible playbook from the workspace but using the key in the temporary location
+                        cd ansible
+                        ansible-playbook -i inventory.ini playbook.yml -v --private-key=/tmp/ansible-deploy/hotel-booking.pem
+                        
+                        # Clean up
+                        rm -f /tmp/ansible-deploy/hotel-booking.pem
                     '''
                 }
             }
