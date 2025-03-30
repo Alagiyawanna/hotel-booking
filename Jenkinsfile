@@ -50,15 +50,19 @@ pipeline {
             steps {
                 sh '''
                     cd terraform
+                    export AWS_ACCESS_KEY_ID=$AWS_CREDENTIALS_USR
+                    export AWS_SECRET_ACCESS_KEY=$AWS_CREDENTIALS_PSW
                     terraform plan -out=tfplan
                 '''
             }
         }
-        
+
         stage('Terraform Apply') {
             steps {
                 sh '''
                     cd terraform
+                    export AWS_ACCESS_KEY_ID=$AWS_CREDENTIALS_USR
+                    export AWS_SECRET_ACCESS_KEY=$AWS_CREDENTIALS_PSW
                     terraform apply -auto-approve tfplan
                 '''
             }
