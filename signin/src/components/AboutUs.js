@@ -38,10 +38,10 @@ const AboutUs = () => {
                 <span className="feature-highlight">Flexible Booking</span> — Change or cancel your 
                 reservation with ease
               </li>
-              <li>
+              {/* <li>
                 <span className="feature-highlight">24/7 Support</span> — Our dedicated team is always 
                 ready to assist you
-              </li> 
+              </li>  */}
             </ul>
           </div>
         </div>
