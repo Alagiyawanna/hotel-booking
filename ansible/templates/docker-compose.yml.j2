@@ -28,7 +28,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - REACT_APP_API_URL=http://23.21.176.140:3000
+      - REACT_APP_API_URL=http://23.21.176.140:5000
     depends_on:
       backend:
         condition: service_healthy
