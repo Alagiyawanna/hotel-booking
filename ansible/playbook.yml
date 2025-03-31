@@ -52,10 +52,23 @@
         group: ubuntu
         mode: "0644"
 
-    - name: Pull Docker images
+    - name: Remove existing containers
+      become: true
+      become_user: ubuntu
+      command: docker-compose down
+      args:
+        chdir: /home/ubuntu/staysphere
+      ignore_errors: yes
+
+    - name: Remove old Docker images
+      command: "docker rmi {{ docker_registry }}/staysphere-backend:latest {{ docker_registry }}/staysphere-signin:latest"
+      ignore_errors: yes
+
+    - name: Pull Docker images with no-cache
       docker_image:
         name: "{{ item }}"
         source: pull
+        force_source: yes
       loop:
         - "{{ docker_registry }}/staysphere-backend:latest"
         - "{{ docker_registry }}/staysphere-signin:latest"
@@ -68,14 +81,6 @@
 
     - name: Reset ssh connection to allow user changes to affect the current session
       meta: reset_connection
-
-    - name: Remove existing containers
-      become: true
-      become_user: ubuntu
-      command: docker-compose down
-      args:
-        chdir: /home/ubuntu/staysphere
-      ignore_errors: yes
 
     - name: Force recreate containers
       become: true
