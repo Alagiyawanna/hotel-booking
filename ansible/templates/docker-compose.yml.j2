@@ -14,6 +14,11 @@ services:
       - CORS_ORIGIN=http://23.21.176.140:3000  # Allow CORS from the same server's frontend
     networks:
       - hotel-booking-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/hotels"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
     image: {{ docker_registry }}/staysphere-signin:latest  # Fixed image name
@@ -23,7 +28,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - REACT_APP_API_URL=http://23.21.176.140:5000
+      - REACT_APP_API_URL=http://23.21.176.140:3000
     depends_on:
       backend:
         condition: service_healthy
