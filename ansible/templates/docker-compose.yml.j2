@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: kalagiyawanna/staysphere-backend:latest
+    image: {{ docker_registry }}/staysphere-backend:latest
     container_name: hotel-booking-backend
     restart: unless-stopped
     ports:
@@ -11,6 +11,7 @@ services:
       - NODE_ENV=production
       - MONGO_URI={{ mongo_uri }}
       - JWT_SECRET={{ jwt_secret }}
+      - CORS_ORIGIN=http://{{ ansible_host }}:3000  # Allow CORS from the same server's frontend
     networks:
       - hotel-booking-network
     healthcheck:
@@ -20,11 +21,14 @@ services:
       retries: 3
 
   frontend:
-    image: kalagiyawanna/staysphere-signin:latest
+    image: {{ docker_registry }}/staysphere-signin:latest  # Fixed image name
     container_name: hotel-booking-frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://{{ ansible_host }}:5000
     depends_on:
       backend:
         condition: service_healthy
