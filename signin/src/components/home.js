@@ -39,9 +39,6 @@ const Home = () => {
                 <div className="hero-content">
                     <h1>Welcome to Your Dream Stay</h1>
                     <p>Book your perfect hotel stay with ease and comfort.</p>
-                    <Link to="/hotels" className="hero-cta-button">
-                        Browse All Hotels
-                    </Link>
                 </div>
             </section>
             
