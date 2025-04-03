@@ -53,7 +53,7 @@ const Home = () => {
             )}
             
             {/* About Us Section */}
-            {/* <AboutUs /> */}
+            <AboutUs />
             
             {/* Call to Action Section */}
             <section className="cta-section">
