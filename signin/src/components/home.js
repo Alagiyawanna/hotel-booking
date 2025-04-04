@@ -37,7 +37,7 @@ const Home = () => {
             {/* Hero Section without Search & Filters */}
             <section className="hero-section">
                 <div className="hero-content">
-                    <h1>Welcome to Your Dream Stay</h1>
+                    {/* <h1>Welcome to Your Dream Stay</h1> */}
                     <p>Book your perfect hotel stay with ease and comfort.</p>
                 </div>
             </section>
